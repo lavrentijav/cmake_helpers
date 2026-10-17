@@ -48,11 +48,12 @@ if (LINUX)
         desktop-app::external_qt_static_plugins_nimf
     )
 
-    if (TARGET Qt::DBus)
+    if (TARGET Qt::DBus AND NOT DESKTOP_APP_DISABLE_FCITX5)
         add_checked_subdirectory(fcitx5)
         target_link_libraries(external_qt_static_plugins
         PUBLIC
             desktop-app::external_qt_static_plugins_fcitx5
+            $<TARGET_OBJECTS:external_qt_static_plugins_fcitx5_init>
         )
     endif()
 endif()

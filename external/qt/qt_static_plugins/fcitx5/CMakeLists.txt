@@ -81,8 +81,5 @@ PRIVATE
     desktop-app::external_qt
 )
 
-target_link_libraries(external_qt_static_plugins_fcitx5
-INTERFACE
-    external_qt_static_plugins_fcitx5_init
-    $<TARGET_OBJECTS:external_qt_static_plugins_fcitx5_init>
-)
+# TeleForge: the init objects are wired by qt_static_plugins, so the plugin library and its registration stay in one link group.
+
