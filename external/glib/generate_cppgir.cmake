@@ -16,6 +16,7 @@ function(generate_cppgir target_name gir)
     set(ignore_files
         ${cppgir_loc}/data/cppgir.ignore
         ${cppgir_loc}/data/cppgir_unix.ignore
+        ${cmake_helpers_loc}/external/glib/teleforge.ignore
     )
 
     add_custom_command(

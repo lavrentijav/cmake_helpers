@@ -1,0 +1,7 @@
+# TeleForge: extra cppgir ignores for the glib shipped in the build image.
+# Gir files name some symbols without the C prefix and expose a few functions
+# whose generated wrappers do not compile against glib 2.56 headers.
+Gio:function:networking_init
+Gio:function:g_networking_init
+GLib:function:unichar_to_utf8
+GLib:function:g_unichar_to_utf8
