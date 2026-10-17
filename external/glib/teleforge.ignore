@@ -5,3 +5,7 @@ Gio:function:networking_init
 Gio:function:g_networking_init
 GLib:function:unichar_to_utf8
 GLib:function:g_unichar_to_utf8
+GLib:constant:WIN32_MSG_HANDLE
+GLib:constant:G_WIN32_MSG_HANDLE
+GLib:constant:LOG_DOMAIN
+GLib:constant:G_LOG_DOMAIN
