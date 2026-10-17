@@ -68,7 +68,10 @@ if (MSVC)
         $<$<NOT:$<AND:$<CONFIG:Debug>,$<OR:$<BOOL:${build_win64}>,$<BOOL:${build_winarm}>>>>:$<IF:$<BOOL:$<GENEX_EVAL:$<TARGET_PROPERTY:MSVC_DEBUG_INFORMATION_FORMAT>>>,/DEBUG,/DEBUG:NONE>>
         $<$<NOT:$<CONFIG:Debug>>:/OPT:REF>
         /INCREMENTAL:NO
-        /DEPENDENTLOADFLAG:0x800
+        # 0x800 = LOAD_LIBRARY_SEARCH_SYSTEM32, 0x200 = SEARCH_APPLICATION_DIR.
+        # TeleForge bundles python314.dll next to the executable, so static
+        # imports must also be resolvable from the application directory.
+        /DEPENDENTLOADFLAG:0xA00
     )
 
     if (DESKTOP_APP_ASAN)

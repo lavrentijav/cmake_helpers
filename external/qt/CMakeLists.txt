@@ -170,11 +170,11 @@ if (WIN32)
     INTERFACE
         ${qt_loc}/mkspecs/win32-msvc
     )
-    set(qt_libs
-        ${common_qt_libs}
-        plugins/platforms/${qt_lib_prefix}qwindows
-    )
     if (QT_VERSION GREATER 6)
+        set(qt_libs
+            ${common_qt_libs}
+            plugins/platforms/${qt_lib_prefix}qwindows
+        )
         list(APPEND qt_libs
             plugins/tls/${qt_lib_prefix}qschannelbackend
             plugins/networkinformation/${qt_lib_prefix}qnetworklistmanager
@@ -188,6 +188,11 @@ if (WIN32)
             $<TARGET_OBJECTS:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin_resources_1>
         )
     else()
+        set(qt_libs
+            ${common_qt_libs}
+            plugins/platforms/${qt_lib_prefix}qwindows
+            lib/${qt_lib_prefix}Qt${QT_VERSION_MAJOR}VulkanSupport
+        )
         list(APPEND qt_libs
             plugins/bearer/${qt_lib_prefix}qgenericbearer
             lib/${qt_lib_prefix}Qt${QT_VERSION_MAJOR}AccessibilitySupport

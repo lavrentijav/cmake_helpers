@@ -21,6 +21,8 @@ if (DESKTOP_APP_SPECIAL_TARGET STREQUAL ""
 endif()
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF CACHE BOOL "")
+# TeleForge: use embedded debug info (/Z7) instead of a shared vc143.pdb.
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "Embedded" CACHE STRING "")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "")
 option(DESKTOP_APP_TEST_APPS "Build test apps, development only." OFF)
 option(DESKTOP_APP_LOTTIE_DISABLE_RECOLORING "Disable recoloring of lottie animations." OFF)
@@ -37,6 +39,7 @@ option(DESKTOP_APP_ASAN "Enable address sanitizer" OFF)
 option(DESKTOP_APP_ENABLE_LTO "Enable Link Time Optimization (slow builds, use for releases)." OFF)
 cmake_dependent_option(DESKTOP_APP_USE_ENCHANT "Use Enchant instead of bundled Hunspell." OFF LINUX OFF)
 cmake_dependent_option(DESKTOP_APP_USE_CLD3 "Disable system text language recognition and use bundled cld3 only." OFF APPLE ON)
+cmake_dependent_option(DESKTOP_APP_USE_LLAMA_CPP "Link llama.cpp into TeleForge for in-process GGUF chat and embeddings." ON "WIN32 OR LINUX" OFF)
 
 if (APPLE)
     set(DESKTOP_APP_MAC_ARCH "" CACHE STRING "Target macOS arch.")
