@@ -20,26 +20,30 @@ if (DESKTOP_APP_SPECIAL_TARGET STREQUAL ""
     set(disable_autoupdate 1)
 endif()
 
+if (DEFINED ENV{FLATPAK_ID})
+    set(disable_autoupdate 0)
+endif()
+
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF CACHE BOOL "")
-# TeleForge: use embedded debug info (/Z7) instead of a shared vc143.pdb.
-set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "Embedded" CACHE STRING "")
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
+    "$<$<CONFIG:Debug>:ProgramDatabase>$<$<NOT:$<CONFIG:Debug>>:Embedded>"
+    CACHE STRING "")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "")
 option(DESKTOP_APP_TEST_APPS "Build test apps, development only." OFF)
-option(DESKTOP_APP_LOTTIE_DISABLE_RECOLORING "Disable recoloring of lottie animations." OFF)
 option(DESKTOP_APP_LOTTIE_USE_CACHE "Use caching in lottie animations." ON)
-cmake_dependent_option(DESKTOP_APP_DISABLE_X11_INTEGRATION "Disable all code for X11 integration." OFF LINUX ON)
 cmake_dependent_option(DESKTOP_APP_USE_ALLOCATION_TRACER "Use simple allocation tracer." OFF LINUX OFF)
 option(DESKTOP_APP_USE_PACKAGED_FONTS "Use preinstalled fonts instead of bundled patched ones." OFF)
-option(DESKTOP_APP_USE_PACKAGED_RLOTTIE "Find rlottie using CMake instead of bundled patched one." OFF)
 option(DESKTOP_APP_DISABLE_CRASH_REPORTS "Disable crash report generation." ${no_special_target})
 option(DESKTOP_APP_DISABLE_AUTOUPDATE "Disable autoupdate." ${disable_autoupdate})
 option(DESKTOP_APP_DISABLE_QT_PLUGINS "Disable bundled Qt plugins." OFF)
+cmake_dependent_option(DESKTOP_APP_RELEASE_QT "Link the optimized Qt build even in Debug configuration." OFF "APPLE AND NOT DESKTOP_APP_USE_PACKAGED" OFF)
 option(DESKTOP_APP_USE_HUNSPELL_ONLY "Disable system spellchecker and use bundled Hunspell only. (For debugging purposes)" OFF)
 option(DESKTOP_APP_ASAN "Enable address sanitizer" OFF)
-option(DESKTOP_APP_ENABLE_LTO "Enable Link Time Optimization (slow builds, use for releases)." OFF)
+cmake_dependent_option(DESKTOP_APP_ENABLE_LTO "Enable Link Time Optimization (slow builds, use for releases)." OFF DESKTOP_APP_SPECIAL_TARGET OFF)
 cmake_dependent_option(DESKTOP_APP_USE_ENCHANT "Use Enchant instead of bundled Hunspell." OFF LINUX OFF)
 cmake_dependent_option(DESKTOP_APP_USE_CLD3 "Disable system text language recognition and use bundled cld3 only." OFF APPLE ON)
 cmake_dependent_option(DESKTOP_APP_USE_LLAMA_CPP "Link llama.cpp into TeleForge for in-process GGUF chat and embeddings." ON "WIN32 OR LINUX" OFF)
+option(DESKTOP_APP_USE_PANGO "Render text via Pango instead of private Qt API" ${LINUX})
 
 if (APPLE)
     set(DESKTOP_APP_MAC_ARCH "" CACHE STRING "Target macOS arch.")
@@ -88,14 +92,6 @@ elseif (APPLE)
     if (DESKTOP_APP_SPECIAL_TARGET STREQUAL "macstore")
         set(build_macstore 1)
     endif()
-endif()
-
-if (build_win64 OR build_winarm)
-    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
-        "$<$<CONFIG:Debug>:ProgramDatabase>$<$<NOT:$<CONFIG:Debug>>:Embedded>"
-        CACHE STRING "")
-else()
-    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "ProgramDatabase" CACHE STRING "")
 endif()
 
 #if (DESKTOP_APP_ASAN AND WIN32)
