@@ -351,6 +351,20 @@ if (QT_VERSION_MAJOR GREATER_EQUAL 6)
     endif()
 endif()
 
+# TeleForge: the shipped static Qt omits some plugin init targets, so referencing
+# them fails configuration instead of just dropping the plugin. Keep only the
+# object files whose targets this Qt build actually exports.
+set(qt_libs_list_existing)
+foreach (qt_lib_item IN LISTS qt_libs_list)
+    if (qt_lib_item MATCHES "TARGET_OBJECTS:Qt${QT_VERSION_MAJOR}::([A-Za-z0-9_]+)>")
+        if (NOT TARGET "Qt${QT_VERSION_MAJOR}::${CMAKE_MATCH_1}")
+            continue()
+        endif()
+    endif()
+    list(APPEND qt_libs_list_existing "${qt_lib_item}")
+endforeach()
+set(qt_libs_list "${qt_libs_list_existing}")
+
 target_link_libraries(external_qt
 INTERFACE
     ${qt_libs_list}
